@@ -8,7 +8,7 @@ import com.ibm.bankingapp.model.Customer;
 public class CustomerService {
 	
 	public void addCustomer(Customer customer) {
-		//TODO
+		
 	}
 	
 	public Customer getCustomerById(Long id) {
