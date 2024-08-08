@@ -35,7 +35,7 @@ public class AccountController {
 		return service.updateAccDetailsByAccNo(id);
 	}
 	
-	@DeleteMapping("customers/{id}")
+	@DeleteMapping("accounts/{id}")
 	public Boolean deleteAcc(@PathVariable long id) {
 		return service.deleteAccDetailsByAccNo(id);
 	}

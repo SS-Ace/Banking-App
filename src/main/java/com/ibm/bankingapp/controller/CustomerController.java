@@ -33,8 +33,8 @@ public class CustomerController {
 	}
 	
 	@DeleteMapping("customers/{id}")
-	public void deleteCus(@PathVariable long id) {
-		service.deleteCustomerById(id);
+	public Boolean deleteCus(@PathVariable long id) {
+		return service.deleteCustomerById(id);
 	}
 
 }
