@@ -10,7 +10,7 @@ import com.ibm.bankingapp.model.Customer;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Long> {
 	List<Customer> findByEmail(String email);
-	List<Customer> viewCustomers();
+	List<Customer> findAll();
 	List<Customer> findByName(String name);
 	List<Customer> findByEmailAndPassword(String email, String password);
 	
