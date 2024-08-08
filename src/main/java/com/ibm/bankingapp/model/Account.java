@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 
 @Entity
 public class Account {
@@ -17,7 +16,7 @@ public class Account {
 	private Long accountNumber; 
 	private String accountType; 
     private BigDecimal balance; 
-    @ManyToOne 
+    @ManyToAny 
     @JoinColumn(name = "customer_id") 
     private Customer customer;
     public Account() {
