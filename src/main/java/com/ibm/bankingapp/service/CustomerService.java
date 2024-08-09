@@ -1,29 +1,44 @@
 package com.ibm.bankingapp.service;
 
+import java.util.Optional;
+
+import javax.management.RuntimeErrorException;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.bankingapp.model.Customer;
+import com.ibm.bankingapp.repo.CustomerRepository;
 
 @Service
 public class CustomerService {
 	
+	@Autowired
+	private CustomerRepository custRepo;
+	
+	@Transactional(rollbackFor = {Exception.class})
 	public void addCustomer(Customer customer) {
-		
+		if(custRepo.findByEmail(customer.getEmail()).size() != 0) {
+			return;
+		}
+		custRepo.save(customer);
 	}
 	
 	public Customer getCustomerById(Long id) {
-		//TODO
-		return null;
+		return custRepo.findById(id).orElse(null);
 	}
 	
-	public Boolean updateCustomerById(Long id, Customer customer) {
-		//TODO
-		return false;
+	@Transactional(rollbackFor = {Exception.class})
+	public void updateCustomerById(Long id, Customer customer){
+		if(id != customer.getId())
+			throw new RuntimeException("Invalid input data");
+		Customer cust = custRepo.findById(id).orElse(null);
+		if(cust != null)
+			custRepo.save(customer);
 	}
 	
-	public Boolean deleteCustomerById(Long id) {
-		//TODO
-
-		return false;
+	public void deleteCustomerById(Long id) {
+		
 	}
 }
