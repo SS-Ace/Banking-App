@@ -10,6 +10,10 @@ public class AccountFormData {
 	private BigDecimal balance;
     private Long customerId;
     
+    public AccountFormData() {
+    	
+    }
+    
     public AccountFormData(String accountType, BigDecimal balance, Long customerId) {
 		super();
 		this.accountType = accountType;
