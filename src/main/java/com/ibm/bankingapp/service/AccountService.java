@@ -51,13 +51,18 @@ public class AccountService {
 		return null;
 	}
 	
-	public Boolean updateAccDetailsByAccNo(Long accNo) {
-		
-		return false;
+	public void updateAccDetailsByAccNo(Long accNo, AccountFormData form) {
+		Customer cust  = custRepo.findById(form.getCustomerId()).orElse(null);
+		if(cust == null) return;
+		List<Account> accounts = accRepo.findByCustomer(cust);
+		for(Account account: accounts) {
+			if(account.getAccountType().equals(form.getAccountType())) return;
+		}
+		Account acc = Conversions.convertAccFormToAcc(form, cust);
+		accRepo.save(acc);
 	}
 	
-	public Boolean deleteAccDetailsByAccNo(Long accNo) {
+	public void deleteAccDetailsByAccNo(Long accNo) {
 		
-		return false;
 	}
 }
