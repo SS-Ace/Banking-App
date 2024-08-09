@@ -31,13 +31,13 @@ public class AccountController {
 	}
 	
 	@PutMapping("accounts/{id}")
-	public Boolean updateAcc(@PathVariable long id) {
-		return service.updateAccDetailsByAccNo(id);
+	public void updateAcc(@PathVariable long id) {
+		service.updateAccDetailsByAccNo(id);
 	}
 	
 	@DeleteMapping("accounts/{id}")
-	public Boolean deleteAcc(@PathVariable long id) {
-		return service.deleteAccDetailsByAccNo(id);
+	public void deleteAcc(@PathVariable long id) {
+		service.deleteAccDetailsByAccNo(id);
 	}
 	
 	@GetMapping("accounts/{id}/transactions")

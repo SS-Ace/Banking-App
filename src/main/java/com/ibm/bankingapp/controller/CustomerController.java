@@ -28,13 +28,13 @@ public class CustomerController {
 	}
 	
 	@PutMapping("customers/{id}")
-	public Boolean updateCus(@PathVariable long id,Customer model) {
-		return service.updateCustomerById(id,model);
+	public void updateCus(@PathVariable long id,Customer model) {
+		service.updateCustomerById(id,model);
 	}
 	
 	@DeleteMapping("customers/{id}")
-	public Boolean deleteCus(@PathVariable long id) {
-		return service.deleteCustomerById(id);
+	public void deleteCus(@PathVariable long id) {
+		service.deleteCustomerById(id);
 	}
 
 }
