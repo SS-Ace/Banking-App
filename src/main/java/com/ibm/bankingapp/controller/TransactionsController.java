@@ -4,11 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.service.TransactionService;
 
-@Controller
+@RestController
 public class TransactionsController {
 	@Autowired
 	private TransactionService service;

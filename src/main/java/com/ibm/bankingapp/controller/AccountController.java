@@ -10,19 +10,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.ibm.bankingapp.formData.AccountFormData;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
+import com.ibm.bankingapp.model.Transaction;
 import com.ibm.bankingapp.service.AccountService;
 
-@Controller
+@RestController
 public class AccountController {
 	@Autowired
 	private AccountService service;
 	
 	@PostMapping("createaccount")
-	public void createAcc(@RequestBody Account model) {
-		service.addAccount(model);
+	public void createAcc(@RequestBody AccountFormData form) {
+		service.addAccount(form);
 	}
 	
 	@GetMapping("accounts/{id}")
@@ -41,7 +44,7 @@ public class AccountController {
 	}
 	
 	@GetMapping("accounts/{id}/transactions")
-	public List<Account> viewTransactions(@PathVariable long id) {
+	public List<Transaction> viewTransactions(@PathVariable long id) {
 		return service.getTransactionHisByAccNo(id);
 	}
 	

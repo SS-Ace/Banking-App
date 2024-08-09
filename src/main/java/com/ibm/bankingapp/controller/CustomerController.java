@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.service.CustomerService;
 
-@Controller
+@RestController
 public class CustomerController {
 	@Autowired
 	private CustomerService service;
@@ -28,8 +29,10 @@ public class CustomerController {
 	}
 	
 	@PutMapping("customers/{id}")
-	public void updateCus(@PathVariable long id,Customer model) {
+	public void updateCus(@PathVariable long id,@RequestBody Customer model) {
+		System.out.println(model);
 		service.updateCustomerById(id,model);
+		
 	}
 	
 	@DeleteMapping("customers/{id}")
