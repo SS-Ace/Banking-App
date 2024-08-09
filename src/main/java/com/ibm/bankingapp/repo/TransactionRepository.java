@@ -15,5 +15,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 	List<Transaction> findAmountByTransactionId(Long transactionId);
 	List<Transaction> findTransactionDateByTransactionId(Long transactionId);
 	List<Transaction> findByTransactionDate(LocalDateTime transactionDate);
+	void deleteByTransactionId(Long transactionId);
 	
 }
