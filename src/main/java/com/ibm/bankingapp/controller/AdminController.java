@@ -27,7 +27,7 @@ public class AdminController {
 
     @PostMapping
     public ResponseEntity<Admin> createAdmin(@RequestBody Admin admin) {
-        Admin savedAdmin = service.saveAdmin(admin);
+        Admin savedAdmin = service.addAdmin(admin);
         return ResponseEntity.ok(savedAdmin);
     }
     
@@ -51,9 +51,9 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/rollback/{customerId}")
+    @PostMapping("/customers/{customerId}")
     public ResponseEntity<Void> rollbackCustomerTransaction(@PathVariable Long customerId) {
-        service.rollbackCustomerTransaction(customerId);
+        service.deleteCustomerById(customerId);
         return ResponseEntity.noContent().build();
     }
 

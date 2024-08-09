@@ -5,13 +5,13 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ibm.bankingapp.model.Admin;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.repo.AdminRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 
-import jakarta.transaction.Transactional;
 
 @Service
 public class AdminService {
@@ -21,7 +21,12 @@ public class AdminService {
 
     @Autowired
     private CustomerRepository customerRepository;
-
+    
+    @Transactional(rollbackFor = {Exception.class})
+    public Admin addAdmin(Admin admin) {
+        return adminRepository.save(admin);
+    }
+    
     public List<Admin> getAllAdmins() {
         return adminRepository.findAll();
     }
@@ -30,12 +35,8 @@ public class AdminService {
         return adminRepository.findById(id);
     }
 
-    public Admin saveAdmin(Admin admin) {
-        return adminRepository.save(admin);
-    }
-
     @Transactional
-    public void rollbackCustomerTransaction(Long customerId) {
+    public void deleteCustomerById(Long customerId) {
         Optional<Customer> customer = customerRepository.findById(customerId);
         if (customer.isPresent()) {
             customerRepository.delete(customer.get());

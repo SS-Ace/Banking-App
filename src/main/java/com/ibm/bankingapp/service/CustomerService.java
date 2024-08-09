@@ -1,10 +1,14 @@
 package com.ibm.bankingapp.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
+import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 
 @Service
@@ -12,6 +16,9 @@ public class CustomerService {
 	
 	@Autowired
 	private CustomerRepository custRepo;
+	
+	@Autowired
+	private AccountRepository accRepo;
 	
 	@Transactional(rollbackFor = {Exception.class})
 	public void addCustomer(Customer customer) {
@@ -34,7 +41,15 @@ public class CustomerService {
 			custRepo.save(customer);
 	}
 	
+	@Transactional(rollbackFor = {Exception.class})
 	public void deleteCustomerById(Long id) {
-		
+		Customer cust = custRepo.findById(id).orElse(null);
+		if(cust != null) {
+			List<Account> accounts = accRepo.findByCustomer(cust);
+			for(Account acc: accounts) {
+				accRepo.delete(acc);
+			}
+			custRepo.deleteById(id);
+		}
 	}
 }
