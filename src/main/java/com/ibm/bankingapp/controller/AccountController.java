@@ -35,7 +35,7 @@ public class AccountController {
 	
 	@PutMapping("accounts/{id}")
 	public void updateAcc(@PathVariable long id) {
-		service.updateAccDetailsByAccNo(id);
+		service.updateAccDetailsByAccNo(id, null);
 	}
 	
 	@DeleteMapping("accounts/{id}")

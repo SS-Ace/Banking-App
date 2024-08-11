@@ -20,6 +20,7 @@ public class CustomerController {
 	
 	@PostMapping("createcustomer")
 	public void createCus(@RequestBody Customer model) {
+		System.out.println("");
 		service.addCustomer(model);
 	}
 	
