@@ -16,14 +16,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-	@Column(nullable = false)
-    private String name;
-    
 	@Column(nullable = false, unique = true)
     private String username;
-	
-	@Column(nullable = false, unique = true)
-    private String email;
     
 	@Column(nullable = false)
     private String password;
@@ -34,20 +28,23 @@ public class User {
 	@PrePersist
     protected void onCreate() {
         if (userType == null) {
-            userType = "USER";
+            userType = "CUSTOMER";
         }
     }
 	
 	public User() {
 		
 	}
+	
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
 
-	public User(Long id, String name, String username, String email, String password, String userType) {
+	public User(Long id, String username, String password, String userType) {
 		super();
 		this.id = id;
-		this.name = name;
 		this.username = username;
-		this.email = email;
 		this.password = password;
 		this.userType = userType;
 	}
@@ -60,28 +57,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getUsername() {
 		return username;
 	}
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getPassword() {
@@ -99,13 +80,6 @@ public class User {
 	public void setUserType(String userType) {
 		this.userType = userType;
 	}
-
-	@Override
-	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", username=" + username + ", email=" + email + ", password="
-				+ password + ", userType=" + userType + "]";
-	}
-	
 	
 	
 }
