@@ -13,6 +13,7 @@ import com.ibm.bankingapp.model.Transaction;
 import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 import com.ibm.bankingapp.repo.TransactionRepository;
+import com.ibm.bankingapp.responseData.AccountData;
 import com.ibm.bankingapp.utils.Conversions;
 
 
@@ -33,51 +34,78 @@ public class AccountService {
 	
 	@Transactional(rollbackFor = {Exception.class})
 	public void addAccount(String token, AccountFormData form) throws Exception{
-		Long userId = getUserId(token);
-		Customer cust  = custRepo.findByUserId(userId);
-		if(cust == null) throw new Exception("Invalid Customer");
+		Customer cust = getCustomer(token);
 		List<Account> accounts = accRepo.findByCustomer(cust);
 		for(Account account: accounts) {
-			if(account.getAccountType().equals(form.getAccountType())) throw new Exception(form.getAccountType() + "Account is already there");
+			if(account.getAccountType().equals(form.getAccountType())) throw new Exception(form.getAccountType() + " account is already there");
 		}
 		
 		Account acc = Conversions.convertAccFormToAcc(form, cust);
 		accRepo.save(acc);
 	}
 	
-	public Account getAccDetailsByAccNo(String token, Long accNo) {
-		
-		return accRepo.findById(accNo).orElse(null);
+	public AccountData getAccDetailsByAccNo(String token, Long accNo) throws Exception {
+		Customer cust = getCustomer(token);
+		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
+		Account acc =  accRepo.findById(accNo).orElse(null);
+		return new AccountData(acc.getAccountNumber(), acc.getAccountType(), acc.getBalance());
 	}
 	
-	public List<Transaction> getTransactionHisByAccNo(Long accNo){
+	public void updateAccDetailsByAccNo(String token, Long accNo, AccountFormData form) throws Exception {
+		Customer cust =  getCustomer(token);
+		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
+		List<Account> accounts = accRepo.findByCustomer(cust);
+		for(Account account: accounts) {
+			if(account.getAccountNumber().equals(accNo)) {
+				account.setAccountType(form.getAccountType() != null ? form.getAccountType() : account.getAccountType());
+				account.setBalance(form.getBalance() != null ? form.getBalance(): account.getBalance());
+				accRepo.save(account);
+			}
+		}
+	}
+	
+	public void deleteAccDetailsByAccNo(String token, Long accNo) throws Exception {
+		Customer cust =  getCustomer(token);
+		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
+		List<Account> accounts = accRepo.findByCustomer(cust);
+		for(Account account: accounts) {
+			if(account.getAccountNumber().equals(accNo)) {
+				accRepo.deleteById(accNo);
+			}
+		}
+	}
+	
+	public List<Transaction> getTransactionHisByAccNo(String token, Long accNo) throws Exception{
+		Customer cust = getCustomer(token);
+		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
 		Account acc = accRepo.findById(accNo).orElse(null);
 		if(acc != null)
 			return transRepo.findBySourceAccount(acc);
 		return null;
 	}
 	
-	public void updateAccDetailsByAccNo(Long accNo, AccountFormData form) {
-		Customer cust  = custRepo.findById(form.getCustomerId()).orElse(null);
-		if(cust == null) return;
-		List<Account> accounts = accRepo.findByCustomer(cust);
-		for(Account account: accounts) {
-			if(account.getAccountType().equals(form.getAccountType())) return;
-		}
-		Account acc = Conversions.convertAccFormToAcc(form, cust);
-		accRepo.save(acc);
-	}
 	
-	public void deleteAccDetailsByAccNo(Long accNo) {
-		
-	}
+	// Private Methods
 	
 	private Long getUserId(String token) {
 		String jwt = token.substring(7);
 		return jwtService.extractUserId(jwt);
 	}
 	
-//	private Boolean isValidAccNo(String token, Long accNo) {
-//		
-//	}
+	private Boolean isValidAccNo(String token, Long accNo) {
+		Long id = getUserId(token);
+		Customer cust = custRepo.findByUserId(id);
+		List<Account> accounts = accRepo.findByCustomer(cust);
+		for(Account acc: accounts) {
+			if(acc.getAccountNumber().equals(accNo)) return true;
+		}
+		return false;
+	}
+	
+	private Customer getCustomer(String token) throws Exception {
+		Long userId = getUserId(token);
+		Customer cust  = custRepo.findByUserId(userId);
+		if(cust == null) throw new Exception("Invalid Customer");
+		return cust;
+	}
 }

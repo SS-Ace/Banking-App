@@ -62,7 +62,7 @@ public class JwtService {
 	
 	public Long extractUserId(String token) {
 	    final Claims claims = extractAllClaims(token);
-	    return claims.get("userId", Long.class); // Get userId from claims
+	    return claims.get("userId", Long.class);
 	}
 
 	public boolean validateToken(String token, UserDetails userDetails) {

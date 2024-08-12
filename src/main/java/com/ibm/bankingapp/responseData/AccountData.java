@@ -1,22 +1,29 @@
-package com.ibm.bankingapp.formData;
+package com.ibm.bankingapp.responseData;
 
 import java.math.BigDecimal;
 
-import org.springframework.stereotype.Component;
-
-@Component
-public class AccountFormData {
+public class AccountData {
+	private Long accountNumber;
 	private String accountType;
 	private BigDecimal balance;
-    
-    public AccountFormData() {
-    	
-    }
-    
-    public AccountFormData(String accountType, BigDecimal balance) {
+	
+	public AccountData() {
+		
+	}
+
+	public AccountData(Long accountNumber, String accountType, BigDecimal balance) {
 		super();
+		this.accountNumber = accountNumber;
 		this.accountType = accountType;
 		this.balance = balance;
+	}
+
+	public Long getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(Long accountNumber) {
+		this.accountNumber = accountNumber;
 	}
 
 	public String getAccountType() {
@@ -34,11 +41,6 @@ public class AccountFormData {
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
 	}
-
-	@Override
-	public String toString() {
-		return "AccountFormData [accountType=" + accountType + ", balance=" + balance
-				+ "]";
-	}
+	
 	
 }

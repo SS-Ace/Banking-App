@@ -2,6 +2,8 @@ package com.ibm.bankingapp.model;
 
 import java.math.BigDecimal;
 import org.hibernate.annotations.ManyToAny;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -15,9 +17,14 @@ public class Account {
 
 	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY) 
-	private Long accountNumber; 
-	private String accountType; 
+	private Long accountNumber;
+	
+	@Column(nullable = false)
+	private String accountType;
+	
+	@Column(nullable = false)
     private BigDecimal balance; 
+	
     @ManyToOne 
     @JoinColumn(name = "customer_id") 
     private Customer customer;
@@ -25,7 +32,7 @@ public class Account {
     @PrePersist
     protected void onCreate() {
         if (accountType == null) {
-            accountType = "CUSTOMER";
+            accountType = "SAVINGS";
         }
         if(balance == null) {
         	balance = new BigDecimal("0.0");

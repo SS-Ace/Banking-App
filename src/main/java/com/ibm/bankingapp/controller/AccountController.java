@@ -18,6 +18,7 @@ import com.ibm.bankingapp.formData.AccountFormData;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
+import com.ibm.bankingapp.responseData.AccountData;
 import com.ibm.bankingapp.service.AccountService;
 
 @RestController
@@ -32,24 +33,23 @@ public class AccountController {
 	}
 	
 	@GetMapping("/{accNo}")
-	public Account viewAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) {
+	public AccountData viewAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
 		return service.getAccDetailsByAccNo(token, accNo);
 	}
 	
-	@PutMapping("/{id}")
-	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable long id) {
-		service.updateAccDetailsByAccNo(id, null);
+	@PutMapping("/{accNo}")
+	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo, @RequestBody AccountFormData form) throws Exception {
+		service.updateAccDetailsByAccNo(token, accNo, form);
 	}
 	
-	@DeleteMapping("/{id}")
-	public void deleteAcc(@RequestHeader("Authorization") String token, @PathVariable long id) {
-		service.deleteAccDetailsByAccNo(id);
+	@DeleteMapping("/{accNo}")
+	public void deleteAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+		service.deleteAccDetailsByAccNo(token, accNo);
 	}
 	
-	@GetMapping("/{id}/transactions")
-	public List<Transaction> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable long id) {
-		return service.getTransactionHisByAccNo(id);
+	@GetMapping("/transactions/{accNo}")
+	public List<Transaction> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+		return service.getTransactionHisByAccNo(token, accNo);
 	}
 	
-
 }
