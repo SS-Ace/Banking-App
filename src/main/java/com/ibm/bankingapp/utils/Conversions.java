@@ -6,6 +6,6 @@ import com.ibm.bankingapp.model.Customer;
 
 public class Conversions {
 	public static Account convertAccFormToAcc(AccountFormData form, Customer cust) {
-		 return new Account(null, form.getAccountType(), form.getBalance(), cust);
+		 return new Account(form.getAccountType(), form.getBalance(), cust);
 	}
 }

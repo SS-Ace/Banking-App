@@ -19,7 +19,7 @@ import com.ibm.bankingapp.service.AdminService;
 import com.ibm.bankingapp.repo.*;
 
 @RestController
-@RequestMapping("/api/admins")
+@RequestMapping("/admins")
 public class AdminController {
 
     @Autowired

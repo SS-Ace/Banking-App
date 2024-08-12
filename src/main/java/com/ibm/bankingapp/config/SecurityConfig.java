@@ -42,9 +42,10 @@ public class SecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.requestMatchers("/users/*")
 					.permitAll()
-					.requestMatchers("/customers/**").hasRole("CUSTOMER")
-					.requestMatchers("/admin/**").hasRole("ADMIN")
-					.anyRequest().authenticated())
+					.requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
+					.requestMatchers("/accounts/**").hasAnyRole("CUSTOMER", "ADMIN")
+					.requestMatchers("/admins/**").hasRole("ADMIN")
+					.anyRequest().denyAll())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 		return http.build();

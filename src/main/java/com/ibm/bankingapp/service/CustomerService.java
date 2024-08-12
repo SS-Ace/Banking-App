@@ -6,19 +6,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.bankingapp.formData.CustomerUpdateForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
+import com.ibm.bankingapp.repo.UserRepository;
 
 @Service
 public class CustomerService {
+	
+	@Autowired
+	private UserRepository userRepo;
 	
 	@Autowired
 	private CustomerRepository custRepo;
 	
 	@Autowired
 	private AccountRepository accRepo;
+	
+	@Autowired
+	private JwtService jwtService;
 	
 	@Transactional(rollbackFor = {Exception.class})
 	public void addCustomer(Customer customer) {
@@ -28,28 +36,35 @@ public class CustomerService {
 		custRepo.save(customer);
 	}
 	
-	public Customer getCustomerById(Long id) {
+	public Customer getCustomerById(String token) {
+		Long id = getUserId(token);
 		return custRepo.findById(id).orElse(null);
 	}
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void updateCustomerById(Long id, Customer customer){
-		if(id != customer.getId())
-			throw new RuntimeException("Invalid input data");
+	public void updateCustomerById(String token, CustomerUpdateForm form){
+		Long id = getUserId(token);
 		Customer cust = custRepo.findById(id).orElse(null);
-		if(cust != null)
-			custRepo.save(customer);
+		cust.setEmail(form.getEmail());
+		cust.setName(form.getName());
 	}
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void deleteCustomerById(Long id) {
+	public void deleteCustomerById(String token) {
+		Long id = getUserId(token);
 		Customer cust = custRepo.findById(id).orElse(null);
 		if(cust != null) {
 			List<Account> accounts = accRepo.findByCustomer(cust);
 			for(Account acc: accounts) {
 				accRepo.delete(acc);
 			}
-			custRepo.deleteById(id);
+			custRepo.deleteByUserId(id);
+			userRepo.deleteById(id);
 		}
+	}
+	
+	private Long getUserId(String token) {
+		String jwt = token.substring(7);
+		return jwtService.extractUserId(jwt);
 	}
 }

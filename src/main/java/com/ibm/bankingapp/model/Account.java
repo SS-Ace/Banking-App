@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 
 @Entity
 public class Account {
@@ -20,9 +21,33 @@ public class Account {
     @ManyToOne 
     @JoinColumn(name = "customer_id") 
     private Customer customer;
+    
+    @PrePersist
+    protected void onCreate() {
+        if (accountType == null) {
+            accountType = "CUSTOMER";
+        }
+        if(balance == null) {
+        	balance = new BigDecimal("0.0");
+        }
+    }
     public Account() {
     	
     }
+    
+    public Account(String accountType, Customer customer) {
+		super();
+		this.accountType = accountType;
+		this.customer = customer;
+	}
+    
+    public Account(String accountType, BigDecimal balance, Customer customer) {
+		super();
+		this.accountType = accountType;
+		this.balance = balance;
+		this.customer = customer;
+	}
+    
 	public Account(Long accountNumber, String accountType, BigDecimal balance, Customer customer) {
 		super();
 		this.accountNumber = accountNumber;

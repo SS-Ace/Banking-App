@@ -26,21 +26,27 @@ public class AccountService {
 	private CustomerRepository custRepo;
 	
 	@Autowired
+	private JwtService jwtService;
+	
+	@Autowired
 	private TransactionRepository transRepo;
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void addAccount(AccountFormData form) {
-		Customer cust  = custRepo.findById(form.getCustomerId()).orElse(null);
-		if(cust == null) return;
+	public void addAccount(String token, AccountFormData form) throws Exception{
+		Long userId = getUserId(token);
+		Customer cust  = custRepo.findByUserId(userId);
+		if(cust == null) throw new Exception("Invalid Customer");
 		List<Account> accounts = accRepo.findByCustomer(cust);
 		for(Account account: accounts) {
-			if(account.getAccountType().equals(form.getAccountType())) return;
+			if(account.getAccountType().equals(form.getAccountType())) throw new Exception(form.getAccountType() + "Account is already there");
 		}
+		
 		Account acc = Conversions.convertAccFormToAcc(form, cust);
 		accRepo.save(acc);
 	}
 	
-	public Account getAccDetailsByAccNo(Long accNo) {
+	public Account getAccDetailsByAccNo(String token, Long accNo) {
+		
 		return accRepo.findById(accNo).orElse(null);
 	}
 	
@@ -65,4 +71,13 @@ public class AccountService {
 	public void deleteAccDetailsByAccNo(Long accNo) {
 		
 	}
+	
+	private Long getUserId(String token) {
+		String jwt = token.substring(7);
+		return jwtService.extractUserId(jwt);
+	}
+	
+//	private Boolean isValidAccNo(String token, Long accNo) {
+//		
+//	}
 }
