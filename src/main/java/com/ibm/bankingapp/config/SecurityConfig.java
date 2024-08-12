@@ -40,10 +40,12 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.csrf(customizer -> customizer.disable())
 			.authorizeHttpRequests(request -> request
-					.requestMatchers("/users/*")
+					.requestMatchers("/users/register", "/users/login")
 					.permitAll()
+					.requestMatchers("/users/update").hasAnyRole("CUSTOMER", "ADMIN")
 					.requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
 					.requestMatchers("/accounts/**").hasAnyRole("CUSTOMER", "ADMIN")
+					.requestMatchers("/transactions/**").hasAnyRole("CUSTOMER", "ADMIN")
 					.requestMatchers("/admins/**").hasRole("ADMIN")
 					.anyRequest().denyAll())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -5,15 +5,15 @@ import java.math.BigDecimal;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccountFormData {
+public class AccountForm {
 	private String accountType;
 	private BigDecimal balance;
     
-    public AccountFormData() {
+    public AccountForm() {
     	
     }
     
-    public AccountFormData(String accountType, BigDecimal balance) {
+    public AccountForm(String accountType, BigDecimal balance) {
 		super();
 		this.accountType = accountType;
 		this.balance = balance;
@@ -37,7 +37,7 @@ public class AccountFormData {
 
 	@Override
 	public String toString() {
-		return "AccountFormData [accountType=" + accountType + ", balance=" + balance
+		return "AccountForm [accountType=" + accountType + ", balance=" + balance
 				+ "]";
 	}
 	

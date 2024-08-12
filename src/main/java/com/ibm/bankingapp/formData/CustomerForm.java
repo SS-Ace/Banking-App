@@ -1,14 +1,14 @@
 package com.ibm.bankingapp.formData;
 
-public class CustomerUpdateForm {
+public class CustomerForm {
 	private String name;
 	private String email;
 	
-	public CustomerUpdateForm() {
+	public CustomerForm() {
 		
 	}
 
-	public CustomerUpdateForm(String name, String email) {
+	public CustomerForm(String name, String email) {
 		super();
 		this.name = name;
 		this.email = email;

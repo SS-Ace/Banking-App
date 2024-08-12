@@ -14,11 +14,12 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.bankingapp.formData.AccountFormData;
+import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
 import com.ibm.bankingapp.responseData.AccountData;
+import com.ibm.bankingapp.responseData.TransactionData;
 import com.ibm.bankingapp.service.AccountService;
 
 @RestController
@@ -28,7 +29,7 @@ public class AccountController {
 	private AccountService service;
 	
 	@PostMapping
-	public void createAcc(@RequestHeader("Authorization") String token, @RequestBody AccountFormData form) throws Exception {
+	public void createAcc(@RequestHeader("Authorization") String token, @RequestBody AccountForm form) throws Exception {
 		service.addAccount(token, form);
 	}
 	
@@ -38,7 +39,7 @@ public class AccountController {
 	}
 	
 	@PutMapping("/{accNo}")
-	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo, @RequestBody AccountFormData form) throws Exception {
+	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo, @RequestBody AccountForm form) throws Exception {
 		service.updateAccDetailsByAccNo(token, accNo, form);
 	}
 	
@@ -48,8 +49,9 @@ public class AccountController {
 	}
 	
 	@GetMapping("/transactions/{accNo}")
-	public List<Transaction> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+	public List<TransactionData> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
 		return service.getTransactionHisByAccNo(token, accNo);
 	}
+	
 	
 }

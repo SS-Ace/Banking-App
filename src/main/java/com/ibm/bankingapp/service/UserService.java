@@ -7,7 +7,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.ibm.bankingapp.formData.LoginForm;
+import com.ibm.bankingapp.formData.UserForm;
 import com.ibm.bankingapp.formData.RegisterForm;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.User;
@@ -41,7 +41,7 @@ public class UserService {
 		custRepo.save(new Customer(null, user.getId(), form.getName(), form.getEmail()));
 	}
 	
-	public String login(LoginForm form) {
+	public String login(UserForm form) {
 		Authentication authentication = authenticationManager
 				.authenticate(new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword()));
 
@@ -56,4 +56,22 @@ public class UserService {
 	public User getUser(String username) {
 		return userRepo.findByUsername(username);
 	}
+	
+	public User updateUser(String token, UserForm form) throws Exception {
+		String jwt = token.substring(7);
+		String username = jwtService.extractUserName(jwt);
+		User user = userRepo.findByUsername(username);
+		if(form.getUsername() != null) {
+			if(userRepo.findByUsername(form.getUsername()) != null) throw new Exception("Username already exists");
+			else
+				user.setUsername(form.getUsername());
+		}
+		if(form.getPassword() != null) {
+			form.setPassword(encoder.encode(form.getPassword()));
+			user.setPassword(form.getPassword());
+		}
+		return userRepo.save(user);
+	}
+	
+	
 }

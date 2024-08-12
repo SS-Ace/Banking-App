@@ -9,8 +9,6 @@ import com.ibm.bankingapp.model.Transaction;
 import java.time.LocalDateTime;
 import com.ibm.bankingapp.model.Account;
 
-
-
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 	List<Transaction> findByTransactionId(Long transactionId);
@@ -20,6 +18,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>{
 	List<Transaction> findBySourceAccount(Account sourceAccount);
 	List<Transaction> findByDestinationAccount(Account destinationAccount);
 	List<Transaction> findByTransactionDateBetween(LocalDateTime startDate, LocalDateTime endDate);
+	
 	void deleteByTransactionId(Long transactionId);
 	
 }

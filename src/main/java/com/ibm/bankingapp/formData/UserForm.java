@@ -3,17 +3,17 @@ package com.ibm.bankingapp.formData;
 import org.springframework.stereotype.Component;
 
 @Component
-public class LoginForm {
+public class UserForm {
 	String username;
 	String password;
 	
-	public LoginForm() {
+	public UserForm() {
 		
 	}
 	
 	
 	
-	public LoginForm(String username, String password) {
+	public UserForm(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;

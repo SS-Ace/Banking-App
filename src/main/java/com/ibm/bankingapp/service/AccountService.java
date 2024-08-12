@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ibm.bankingapp.formData.AccountFormData;
+import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
@@ -14,6 +14,7 @@ import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 import com.ibm.bankingapp.repo.TransactionRepository;
 import com.ibm.bankingapp.responseData.AccountData;
+import com.ibm.bankingapp.responseData.TransactionData;
 import com.ibm.bankingapp.utils.Conversions;
 
 
@@ -33,7 +34,7 @@ public class AccountService {
 	private TransactionRepository transRepo;
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void addAccount(String token, AccountFormData form) throws Exception{
+	public void addAccount(String token, AccountForm form) throws Exception{
 		Customer cust = getCustomer(token);
 		List<Account> accounts = accRepo.findByCustomer(cust);
 		for(Account account: accounts) {
@@ -51,7 +52,7 @@ public class AccountService {
 		return new AccountData(acc.getAccountNumber(), acc.getAccountType(), acc.getBalance());
 	}
 	
-	public void updateAccDetailsByAccNo(String token, Long accNo, AccountFormData form) throws Exception {
+	public void updateAccDetailsByAccNo(String token, Long accNo, AccountForm form) throws Exception {
 		Customer cust =  getCustomer(token);
 		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
 		List<Account> accounts = accRepo.findByCustomer(cust);
@@ -75,12 +76,14 @@ public class AccountService {
 		}
 	}
 	
-	public List<Transaction> getTransactionHisByAccNo(String token, Long accNo) throws Exception{
+	public List<TransactionData> getTransactionHisByAccNo(String token, Long accNo) throws Exception{
 		Customer cust = getCustomer(token);
 		if(!isValidAccNo(token, accNo)) throw new Exception("Incorrect account number");
 		Account acc = accRepo.findById(accNo).orElse(null);
-		if(acc != null)
-			return transRepo.findBySourceAccount(acc);
+		if(acc != null) {
+			List<Transaction> transList = transRepo.findBySourceAccount(acc);
+			return Conversions.convertTransactionToTransactionData(transList);
+		}
 		return null;
 	}
 	

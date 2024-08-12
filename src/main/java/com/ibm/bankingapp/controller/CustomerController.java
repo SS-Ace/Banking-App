@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ibm.bankingapp.formData.CustomerUpdateForm;
+import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.service.CustomerService;
 
@@ -22,21 +22,14 @@ public class CustomerController {
 	@Autowired
 	private CustomerService service;
 	
-//	@PostMapping
-//	public void createCustomer(@RequestBody Customer model) {
-//		System.out.println("");
-//		service.addCustomer(model);
-//	}
-	
 	@GetMapping
 	public Customer getCustomer(@RequestHeader("Authorization") String token){
 		return service.getCustomerById(token);
 	}
 	
 	@PutMapping
-	public void updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerUpdateForm form) {
+	public void updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerForm form) {
 		service.updateCustomerById(token, form);
-		
 	}
 	
 	@DeleteMapping

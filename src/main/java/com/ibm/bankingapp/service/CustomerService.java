@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ibm.bankingapp.formData.CustomerUpdateForm;
+import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.repo.AccountRepository;
@@ -42,7 +42,7 @@ public class CustomerService {
 	}
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void updateCustomerById(String token, CustomerUpdateForm form){
+	public void updateCustomerById(String token, CustomerForm form){
 		Long id = getUserId(token);
 		Customer cust = custRepo.findById(id).orElse(null);
 		cust.setEmail(form.getEmail());
