@@ -19,7 +19,6 @@ import com.ibm.bankingapp.service.JwtService;
 import com.ibm.bankingapp.service.UserService;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/users")
 public class UserController {
 	

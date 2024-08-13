@@ -105,13 +105,13 @@ public class AdminService {
 
 	@Transactional
 	public UserData updateCustomerCredentials(Long userId, UserForm form) throws Exception {
-		form.setPassword(encoder.encode(form.getPassword()));
+		if(form.getPassword() != null)
+			form.setPassword(encoder.encode(form.getPassword()));
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
 			throw new Exception("Customer doesn't exist");
-		user.setUsername(form.getUsername());
-		user.setPassword(form.getPassword());
-		userRepo.save(user);
+		user.setUsername(form.getUsername() != null ? form.getUsername() : user.getPassword());
+		user.setPassword(form.getPassword() != null ? form.getPassword() : user.getPassword());
 		Customer cust = customerRepo.findByUser(user);
 		return Conversions.convertCustomerToCustomerData(cust);
 	}
