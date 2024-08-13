@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Size;
 public class UserForm {
 	
 	@NotBlank
-	@Pattern(regexp = "^[a-zA-Z0-9]$", message = "Username must have only alpha-numeric characters")
+	@Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username must have only alpha-numeric characters")
 	@Size(max = 20, message = "Username cannot contain more than 20 characters")
 	String username;
 	

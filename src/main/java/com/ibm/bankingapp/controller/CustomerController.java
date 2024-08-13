@@ -30,6 +30,7 @@ public class CustomerController {
 	
 	@PutMapping
 	public UserData updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerForm form) {
+		System.out.println(token);
 		return service.updateCustomer(token, form);
 	}
 	

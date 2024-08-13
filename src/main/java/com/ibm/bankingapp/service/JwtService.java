@@ -11,6 +11,7 @@ import java.util.function.Function;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +24,10 @@ import io.jsonwebtoken.security.Keys;
 @Service
 public class JwtService {
 	
-	private static final String SECRET = "TmV3U2VjcmV0S2V5Rm9ySldUU2lnbmluZ1B1cnBvc2VzMTIzNDU2Nzg=\r\n";
-
+	@Value("${jwt.secret.key}")
     private String secretKey;
 
     public JwtService(){
-        secretKey = SECRET;
     }
     
     public String generateSecretKey() {
@@ -43,7 +42,6 @@ public class JwtService {
     }
     
 	public String generateToken(String username, Long userId) {
-		
 		Map<String, Object> claims = new HashMap<String, Object>();
 		claims.put("userId", userId);
 		
@@ -51,7 +49,7 @@ public class JwtService {
 				.setClaims(claims)
 				.setSubject(username)
 				.setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24*3))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24))
 				.signWith(getKey(), SignatureAlgorithm.HS256)
 				.compact();
 	}
@@ -82,7 +80,7 @@ public class JwtService {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET)
+                .setSigningKey(secretKey)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
