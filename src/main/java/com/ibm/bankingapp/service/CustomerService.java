@@ -9,9 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
+import com.ibm.bankingapp.model.User;
 import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 import com.ibm.bankingapp.repo.UserRepository;
+import com.ibm.bankingapp.responseData.UserData;
+import com.ibm.bankingapp.utils.Conversions;
 
 @Service
 public class CustomerService {
@@ -36,29 +39,33 @@ public class CustomerService {
 		custRepo.save(customer);
 	}
 	
-	public Customer getCustomerById(String token) {
+	public UserData getCustomer(String token) {
 		Long id = getUserId(token);
-		return custRepo.findById(id).orElse(null);
+		User user = userRepo.findById(id).orElse(null);
+		Customer cust = custRepo.findByUser(user);
+		return Conversions.convertCustomerToCustomerData(cust);
 	}
 	
 	@Transactional(rollbackFor = {Exception.class})
-	public void updateCustomerById(String token, CustomerForm form){
+	public UserData updateCustomer(String token, CustomerForm form){
 		Long id = getUserId(token);
 		Customer cust = custRepo.findById(id).orElse(null);
 		cust.setEmail(form.getEmail());
 		cust.setName(form.getName());
+		return Conversions.convertCustomerToCustomerData(cust);
 	}
 	
 	@Transactional(rollbackFor = {Exception.class})
 	public void deleteCustomerById(String token) {
 		Long id = getUserId(token);
-		Customer cust = custRepo.findById(id).orElse(null);
+		User user = userRepo.findById(id).orElse(null);
+		Customer cust = custRepo.findByUser(user);
 		if(cust != null) {
 			List<Account> accounts = accRepo.findByCustomer(cust);
 			for(Account acc: accounts) {
 				accRepo.delete(acc);
 			}
-			custRepo.deleteByUserId(id);
+			custRepo.deleteByUser(user);
 			userRepo.deleteById(id);
 		}
 	}

@@ -7,9 +7,23 @@ import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
+import com.ibm.bankingapp.responseData.UserData;
 import com.ibm.bankingapp.responseData.TransactionData;
 
 public class Conversions {
+	
+	public static UserData convertCustomerToCustomerData(Customer cust) {
+		return new UserData(cust.getName(), cust.getEmail(), cust.getUser().getUsername());
+	}
+	
+	public static List<UserData> convertCustomerListToCustomerDataList(List<Customer> custList) {
+		List<UserData> userData = new ArrayList<UserData>();
+		for(Customer c: custList) {
+			userData.add(new UserData(c.getName(), c.getEmail(), c.getUser().getUsername()));
+		}
+		return userData;
+	}
+	
 	public static Account convertAccFormToAcc(AccountForm form, Customer cust) {
 		 return new Account(form.getAccountType(), form.getBalance(), cust);
 	}

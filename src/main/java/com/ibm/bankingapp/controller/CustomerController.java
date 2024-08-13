@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.model.Customer;
+import com.ibm.bankingapp.responseData.UserData;
 import com.ibm.bankingapp.service.CustomerService;
 
 @RestController
@@ -23,13 +24,13 @@ public class CustomerController {
 	private CustomerService service;
 	
 	@GetMapping
-	public Customer getCustomer(@RequestHeader("Authorization") String token){
-		return service.getCustomerById(token);
+	public UserData getCustomer(@RequestHeader("Authorization") String token){
+		return service.getCustomer(token);
 	}
 	
 	@PutMapping
-	public void updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerForm form) {
-		service.updateCustomerById(token, form);
+	public UserData updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerForm form) {
+		return service.updateCustomer(token, form);
 	}
 	
 	@DeleteMapping

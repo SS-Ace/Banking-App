@@ -9,15 +9,20 @@ import com.ibm.bankingapp.formData.TransactionForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
+import com.ibm.bankingapp.model.User;
 import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 import com.ibm.bankingapp.repo.TransactionRepository;
+import com.ibm.bankingapp.repo.UserRepository;
 
 import jakarta.transaction.Transactional;
 
 @Service
 public class TransactionService {
-
+	
+	@Autowired
+	private UserRepository userRepo;
+	
 	@Autowired
 	private TransactionRepository transRepo;
 
@@ -53,7 +58,8 @@ public class TransactionService {
 
 	private Boolean isValidAccNo(String token, Long accNo) {
 		Long id = getUserId(token);
-		Customer cust = custRepo.findByUserId(id);
+		User user = userRepo.findById(id).orElse(null);
+		Customer cust = custRepo.findByUser(user);
 		List<Account> accounts = accRepo.findByCustomer(cust);
 		for (Account acc : accounts) {
 			if (acc.getAccountNumber().equals(accNo))
@@ -64,7 +70,8 @@ public class TransactionService {
 
 	private Customer getCustomer(String token) throws Exception {
 		Long userId = getUserId(token);
-		Customer cust = custRepo.findByUserId(userId);
+		User user = userRepo.findById(userId).orElse(null);
+		Customer cust = custRepo.findByUser(user);
 		if (cust == null)
 			throw new Exception("Invalid Customer");
 		return cust;

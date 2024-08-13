@@ -42,11 +42,12 @@ public class SecurityConfig {
 			.authorizeHttpRequests(request -> request
 					.requestMatchers("/users/register", "/users/login")
 					.permitAll()
-					.requestMatchers("/users/update").hasAnyRole("CUSTOMER", "ADMIN")
-					.requestMatchers("/customers/**").hasAnyRole("CUSTOMER", "ADMIN")
-					.requestMatchers("/accounts/**").hasAnyRole("CUSTOMER", "ADMIN")
-					.requestMatchers("/transactions/**").hasAnyRole("CUSTOMER", "ADMIN")
-					.requestMatchers("/admins/**").hasRole("ADMIN")
+					.requestMatchers("/users/update").hasRole("CUSTOMER")
+					.requestMatchers("/customers/**").hasRole("CUSTOMER")
+					.requestMatchers("/accounts/**").hasRole("CUSTOMER")
+					.requestMatchers("/transactions/**").hasRole("CUSTOMER")
+					.requestMatchers("/admins/customers/**").hasRole("ADMIN")
+					.requestMatchers("/admins/**").hasRole("SUPER_ADMIN")
 					.anyRequest().denyAll())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

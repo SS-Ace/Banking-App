@@ -10,9 +10,11 @@ import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
+import com.ibm.bankingapp.model.User;
 import com.ibm.bankingapp.repo.AccountRepository;
 import com.ibm.bankingapp.repo.CustomerRepository;
 import com.ibm.bankingapp.repo.TransactionRepository;
+import com.ibm.bankingapp.repo.UserRepository;
 import com.ibm.bankingapp.responseData.AccountData;
 import com.ibm.bankingapp.responseData.TransactionData;
 import com.ibm.bankingapp.utils.Conversions;
@@ -20,6 +22,9 @@ import com.ibm.bankingapp.utils.Conversions;
 
 @Service
 public class AccountService {
+	
+	@Autowired
+	private UserRepository userRepo;
 	
 	@Autowired
 	private AccountRepository accRepo;
@@ -72,6 +77,7 @@ public class AccountService {
 		for(Account account: accounts) {
 			if(account.getAccountNumber().equals(accNo)) {
 				accRepo.deleteById(accNo);
+				return;
 			}
 		}
 	}
@@ -97,7 +103,8 @@ public class AccountService {
 	
 	private Boolean isValidAccNo(String token, Long accNo) {
 		Long id = getUserId(token);
-		Customer cust = custRepo.findByUserId(id);
+		User user = userRepo.findById(id).orElse(null);
+		Customer cust = custRepo.findByUser(user);
 		List<Account> accounts = accRepo.findByCustomer(cust);
 		for(Account acc: accounts) {
 			if(acc.getAccountNumber().equals(accNo)) return true;
@@ -107,7 +114,8 @@ public class AccountService {
 	
 	private Customer getCustomer(String token) throws Exception {
 		Long userId = getUserId(token);
-		Customer cust  = custRepo.findByUserId(userId);
+		User user = userRepo.findById(userId).orElse(null);
+		Customer cust  = custRepo.findByUser(user);
 		if(cust == null) throw new Exception("Invalid Customer");
 		return cust;
 	}

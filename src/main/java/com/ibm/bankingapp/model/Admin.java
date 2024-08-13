@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -15,25 +17,26 @@ public class Admin {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 	
-	@Column(nullable = false, unique = true)
-	private Long userId;
-	
 	@Column(nullable = false)
     private String name;
 	
 	@Column(nullable = false, unique = true)
     private String email;
     
+	@OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+	
 	public Admin() {
 		
 	}
 
-	public Admin(Long id, Long userId, String name, String email) {
+	public Admin(Long id, String name, String email, User user) {
 		super();
 		this.id = id;
-		this.userId = userId;
 		this.name = name;
 		this.email = email;
+		this.user = user;
 	}
 
 	public Long getId() {
@@ -42,14 +45,6 @@ public class Admin {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
 	}
 
 	public String getName() {
@@ -67,5 +62,13 @@ public class Admin {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-    
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+	
 }

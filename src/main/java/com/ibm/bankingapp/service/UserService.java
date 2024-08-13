@@ -38,7 +38,7 @@ public class UserService {
 	public void register(RegisterForm form) {
 		form.setPassword(encoder.encode(form.getPassword()));
 		User user = userRepo.save(new User(form.getUsername(), form.getPassword()));
-		custRepo.save(new Customer(null, user.getId(), form.getName(), form.getEmail()));
+		custRepo.save(new Customer(null, form.getName(), form.getEmail(), user));
 	}
 	
 	public String login(UserForm form) {
@@ -72,6 +72,4 @@ public class UserService {
 		}
 		return userRepo.save(user);
 	}
-	
-	
 }
