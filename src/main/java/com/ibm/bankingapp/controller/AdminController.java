@@ -21,6 +21,7 @@ import com.ibm.bankingapp.formData.UserForm;
 import com.ibm.bankingapp.model.Admin;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.service.AdminService;
+import com.ibm.bankingapp.service.ApiException;
 import com.ibm.bankingapp.repo.*;
 import com.ibm.bankingapp.responseData.UserData;
 
@@ -32,7 +33,7 @@ public class AdminController {
     private AdminService service;
 
     @PostMapping
-    public Admin createAdmin( @RequestBody RegisterForm form) throws Exception {
+    public Admin createAdmin( @RequestBody RegisterForm form) throws ApiException {
         return service.addAdmin(form);
     }
     
@@ -42,12 +43,12 @@ public class AdminController {
     }
     
     @GetMapping("/{id}")
-    public Admin getAdminByUserId(@PathVariable Long id) throws Exception {
+    public Admin getAdminByUserId(@PathVariable Long id) throws ApiException {
         return service.getAdminByUserId(id);
     }
 
     @DeleteMapping("/{userId}")
-    public void deleteAdminByUserId(@PathVariable Long userId) throws Exception {
+    public void deleteAdminByUserId(@PathVariable Long userId) throws ApiException {
         service.deleteAdminByUserId(userId);
     }
 
@@ -62,22 +63,28 @@ public class AdminController {
     }
     
     @GetMapping("/customers/{userId}")
-    public UserData getCustomer(@PathVariable Long userId) throws Exception {
+    public UserData getCustomer(@PathVariable Long userId) throws ApiException {
     	return service.getCustomerByUserId(userId);
     }
     
     @PutMapping("/customers/{userId}")
-    public UserData updateCustomerByUserId(@PathVariable Long userId, @RequestBody CustomerForm form) throws Exception {
+    public UserData updateCustomerByUserId(@PathVariable Long userId, @RequestBody CustomerForm form) throws ApiException {
     	return service.updateCustomerUserId(userId, form);
     }
     
     @PutMapping("/customers/credentials/{userId}")
-    public UserData updateCustomerCredentials(@PathVariable Long userId, @RequestBody UserForm form) throws Exception {
+    public UserData updateCustomerCredentials(@PathVariable Long userId, @RequestBody UserForm form) throws ApiException {
     	return service.updateCustomerCredentials(userId, form);
     }
     
+    @PutMapping("/customers/{custId}/accounts/{accNo}")
+    public UserData updateCustAccDetails(@PathVariable Long custId, @PathVariable Long accNo) {
+    	// TODO
+    	return null;
+    }
+    
     @DeleteMapping("/customers/{userId}")
-    public void deleteCustomer(@PathVariable Long userId) throws Exception {
+    public void deleteCustomer(@PathVariable Long userId) throws ApiException {
     	service.deleteCustomer(userId);
     }
 

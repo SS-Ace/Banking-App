@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.responseData.UserData;
+import com.ibm.bankingapp.service.ApiException;
 import com.ibm.bankingapp.service.CustomerService;
 
 @RestController
@@ -30,12 +31,11 @@ public class CustomerController {
 	
 	@PutMapping
 	public UserData updateCus(@RequestHeader("Authorization") String token, @RequestBody CustomerForm form) {
-		System.out.println(token);
 		return service.updateCustomer(token, form);
 	}
 	
 	@DeleteMapping
-	public void deleteCus(@RequestHeader("Authorization") String token) {
+	public void deleteCus(@RequestHeader("Authorization") String token) throws ApiException {
 		service.deleteCustomerById(token);
 	}
 

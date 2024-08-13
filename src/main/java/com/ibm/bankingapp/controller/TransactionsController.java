@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ibm.bankingapp.formData.TransactionForm;
 import com.ibm.bankingapp.model.Account;
+import com.ibm.bankingapp.service.ApiException;
 import com.ibm.bankingapp.service.TransactionService;
 
 @RestController
@@ -19,7 +20,7 @@ public class TransactionsController {
 	private TransactionService service;
 	
 	@PostMapping
-	public void doTransaction(@RequestHeader("Authorization") String token, @RequestBody TransactionForm form) throws Exception {
+	public void doTransaction(@RequestHeader("Authorization") String token, @RequestBody TransactionForm form) throws ApiException {
 		service.doTransaction(token, form);
 	}
 

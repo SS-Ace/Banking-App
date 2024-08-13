@@ -21,6 +21,7 @@ import com.ibm.bankingapp.model.Transaction;
 import com.ibm.bankingapp.responseData.AccountData;
 import com.ibm.bankingapp.responseData.TransactionData;
 import com.ibm.bankingapp.service.AccountService;
+import com.ibm.bankingapp.service.ApiException;
 
 @RestController
 @RequestMapping("/accounts")
@@ -29,27 +30,27 @@ public class AccountController {
 	private AccountService service;
 	
 	@PostMapping
-	public void createAcc(@RequestHeader("Authorization") String token, @RequestBody AccountForm form) throws Exception {
+	public void createAcc(@RequestHeader("Authorization") String token, @RequestBody AccountForm form) throws ApiException {
 		service.addAccount(token, form);
 	}
 	
 	@GetMapping("/{accNo}")
-	public AccountData viewAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+	public AccountData viewAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws ApiException {
 		return service.getAccDetailsByAccNo(token, accNo);
 	}
 	
-	@PutMapping("/{accNo}")
-	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo, @RequestBody AccountForm form) throws Exception {
-		service.updateAccDetailsByAccNo(token, accNo, form);
-	}
-	
+//	@PutMapping("/{accNo}")
+//	public void updateAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo, @RequestBody AccountForm form) throws ApiException {
+//		service.updateAccDetailsByAccNo(token, accNo, form);
+//	}
+//	
 	@DeleteMapping("/{accNo}")
-	public void deleteAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+	public void deleteAcc(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws ApiException {
 		service.deleteAccDetailsByAccNo(token, accNo);
 	}
 	
 	@GetMapping("/transactions/{accNo}")
-	public List<TransactionData> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws Exception {
+	public List<TransactionData> viewTransactions(@RequestHeader("Authorization") String token, @PathVariable Long accNo) throws ApiException {
 		return service.getTransactionHisByAccNo(token, accNo);
 	}
 	

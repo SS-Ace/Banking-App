@@ -31,7 +31,7 @@ public class CustomerService {
 	@Autowired
 	private JwtService jwtService;
 	
-	@Transactional(rollbackFor = {Exception.class})
+	@Transactional(rollbackFor = {ApiException.class, Exception.class})
 	public void addCustomer(Customer customer) {
 		if(custRepo.findByEmail(customer.getEmail()).size() != 0) {
 			return;
@@ -46,19 +46,22 @@ public class CustomerService {
 		return Conversions.convertCustomerToCustomerData(cust);
 	}
 	
-	@Transactional(rollbackFor = {Exception.class})
+	@Transactional(rollbackFor = {ApiException.class, Exception.class})
 	public UserData updateCustomer(String token, CustomerForm form){
 		Long id = getUserId(token);
-		Customer cust = custRepo.findById(id).orElse(null);
+		User user = userRepo.findById(id).orElse(null);
+		Customer cust = custRepo.findByUser(user);
+//		if(isEmailValid(form, cust))
 		cust.setEmail(form.getEmail() != null ? form.getEmail() : cust.getEmail());
 		cust.setName(form.getName() != null ? form.getName() : cust.getName());
 		return Conversions.convertCustomerToCustomerData(cust);
 	}
-	
-	@Transactional(rollbackFor = {Exception.class})
-	public void deleteCustomerById(String token) {
+
+	@Transactional(rollbackFor = {ApiException.class, Exception.class})
+	public void deleteCustomerById(String token) throws ApiException {
 		Long id = getUserId(token);
 		User user = userRepo.findById(id).orElse(null);
+		if(user == null) throw new ApiException("Invalid user");
 		Customer cust = custRepo.findByUser(user);
 		if(cust != null) {
 			List<Account> accounts = accRepo.findByCustomer(cust);
@@ -74,4 +77,10 @@ public class CustomerService {
 		String jwt = token.substring(7);
 		return jwtService.extractUserId(jwt);
 	}
+	
+//	private boolean isEmailValid(CustomerForm form, Customer cust) {
+//		if(form.getEmail() == null || cust.getEmail().equals(form.getEmail())) return false;
+//		if(custRepo.findByEmail(form.getEmail()) != null)
+//		return false;
+//	}
 }

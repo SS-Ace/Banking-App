@@ -35,15 +35,15 @@ public class TransactionService {
 	@Autowired
 	private JwtService jwtService;
 
-	@Transactional(rollbackOn = {Exception.class})
-	public void doTransaction(String token, TransactionForm form) throws Exception {
+	@Transactional(rollbackOn = {ApiException.class, Exception.class})
+	public void doTransaction(String token, TransactionForm form) throws ApiException {
 		Customer cust = getCustomer(token);
-		if(!isValidAccNo(token, form.getFromAccNo())) throw new Exception("Incorrect account number");
+		if(!isValidAccNo(token, form.getFromAccNo())) throw new ApiException("Incorrect account number");
 		Account fromAcc = accRepo.findById(form.getFromAccNo()).orElse(null);
 		Account toAcc = accRepo.findById(form.getToAccNo()).orElse(null);
-		if(toAcc == null) throw new Exception("Invalid to account number");
+		if(toAcc == null) throw new ApiException("Invalid to account number");
 		int comparisonResult = fromAcc.getBalance().compareTo(form.getAmount());
-		if(comparisonResult == -1) throw new Exception("Insufficient balance");
+		if(comparisonResult == -1) throw new ApiException("Insufficient balance");
 		fromAcc.setBalance(fromAcc.getBalance().subtract(form.getAmount()));
 		toAcc.setBalance(toAcc.getBalance().add(form.getAmount()));
 		transRepo.save(new Transaction(fromAcc, toAcc, form.getAmount()));
@@ -68,16 +68,13 @@ public class TransactionService {
 		return false;
 	}
 
-	private Customer getCustomer(String token) throws Exception {
+	private Customer getCustomer(String token) throws ApiException {
 		Long userId = getUserId(token);
 		User user = userRepo.findById(userId).orElse(null);
 		Customer cust = custRepo.findByUser(user);
 		if (cust == null)
-			throw new Exception("Invalid Customer");
+			throw new ApiException("Invalid Customer");
 		return cust;
 	}
 	
-//	private Account getFromAccount(String token, TransactionForm form) {
-//		
-//	}
 }

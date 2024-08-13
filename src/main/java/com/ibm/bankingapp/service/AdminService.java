@@ -43,11 +43,11 @@ public class AdminService {
 	@Autowired
 	private BCryptPasswordEncoder encoder;
 
-	@Transactional(rollbackFor = { Exception.class })
-	public Admin addAdmin(RegisterForm form) throws Exception {
+	@Transactional(rollbackFor = { ApiException.class,Exception.class })
+	public Admin addAdmin(RegisterForm form) throws ApiException {
 		form.setPassword(encoder.encode(form.getPassword()));
 		if (userRepo.findByUsername(form.getUsername()) != null)
-			throw new Exception("Username already exists");
+			throw new ApiException("Username already exists");
 		User user = userRepo.save(new User(form.getUsername(), form.getPassword(), "ADMIN"));
 		return adminRepo.save(new Admin(null, form.getName(), form.getEmail(), user));
 	}
@@ -56,18 +56,18 @@ public class AdminService {
 		return adminRepo.findAll();
 	}
 
-	public Admin getAdminByUserId(Long id) throws Exception {
+	public Admin getAdminByUserId(Long id) throws ApiException {
 		User user = userRepo.findById(id).orElse(null);
 		if (user == null)
-			throw new Exception("Admin doesn't exist");
+			throw new ApiException("Admin doesn't exist");
 		return adminRepo.findByUser(user);
 	}
 
-	@Transactional(rollbackFor = { Exception.class })
-	public void deleteAdminByUserId(Long userId) throws Exception {
+	@Transactional(rollbackFor = { ApiException.class })
+	public void deleteAdminByUserId(Long userId) throws ApiException {
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
-			throw new Exception("Admin doesn't exist");
+			throw new ApiException("Admin doesn't exist");
 		adminRepo.deleteByUser(user);
 		userRepo.deleteById(userId);
 	}
@@ -84,19 +84,19 @@ public class AdminService {
 		return Conversions.convertCustomerListToCustomerDataList(custs);
 	}
 
-	public UserData getCustomerByUserId(Long userId) throws Exception {
+	public UserData getCustomerByUserId(Long userId) throws ApiException {
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
-			throw new Exception("Customer doesn't exist");
+			throw new ApiException("Customer doesn't exist");
 		Customer cust = customerRepo.findByUser(user);
 		return Conversions.convertCustomerToCustomerData(cust);
 	}
 
 	@Transactional
-	public UserData updateCustomerUserId(Long userId, CustomerForm form) throws Exception {
+	public UserData updateCustomerUserId(Long userId, CustomerForm form) throws ApiException {
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
-			throw new Exception("Customer doesn't exist");
+			throw new ApiException("Customer doesn't exist");
 		Customer cust = customerRepo.findByUser(user);
 		cust.setEmail(form.getEmail() != null ? form.getEmail() : cust.getEmail());
 		cust.setName(form.getName() != null ? form.getName() : cust.getName());
@@ -104,12 +104,12 @@ public class AdminService {
 	}
 
 	@Transactional
-	public UserData updateCustomerCredentials(Long userId, UserForm form) throws Exception {
+	public UserData updateCustomerCredentials(Long userId, UserForm form) throws ApiException {
 		if(form.getPassword() != null)
 			form.setPassword(encoder.encode(form.getPassword()));
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
-			throw new Exception("Customer doesn't exist");
+			throw new ApiException("Customer doesn't exist");
 		user.setUsername(form.getUsername() != null ? form.getUsername() : user.getPassword());
 		user.setPassword(form.getPassword() != null ? form.getPassword() : user.getPassword());
 		Customer cust = customerRepo.findByUser(user);
@@ -117,10 +117,10 @@ public class AdminService {
 	}
 
 	@Transactional
-	public void deleteCustomer(Long userId) throws Exception {
+	public void deleteCustomer(Long userId) throws ApiException {
 		User user = userRepo.findById(userId).orElse(null);
 		if (user == null)
-			throw new Exception("Customer doesn't exist");
+			throw new ApiException("Customer doesn't exist");
 		Customer cust = customerRepo.findByUser(user);
 		if(cust != null) {
 			List<Account> accounts = accountRepo.findByCustomer(cust);
