@@ -2,11 +2,30 @@ package com.ibm.bankingapp.formData;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 @Component
 public class RegisterForm {
+	
+	@NotBlank(message = "Name is required")
+	@Pattern(regexp = "^[a-zA-Z ]+$", message = "Name must have only alphabetical characters")
 	String name;
+	
+	@Email(message = "Enter a valid email address")
+	@NotBlank(message = "Email address is required")
 	String email;
+	
+	@NotBlank(message = "Username is required")
+	@Pattern(regexp = "^[a-zA-Z0-9]+$", message = "Username must have only alpha-numeric characters")
 	String username;
+	
+	@NotBlank
+	@Size(
+		min = 8, max = 25, message = "Passwords must have atleast 8 characters and maximum 25 characters"
+	)
 	String password;	
 	
 	public RegisterForm() {
