@@ -50,8 +50,8 @@ public class CustomerService {
 	public UserData updateCustomer(String token, CustomerForm form){
 		Long id = getUserId(token);
 		Customer cust = custRepo.findById(id).orElse(null);
-		cust.setEmail(form.getEmail());
-		cust.setName(form.getName());
+		cust.setEmail(form.getEmail() != null ? form.getEmail() : cust.getEmail());
+		cust.setName(form.getName() != null ? form.getName() : cust.getName());
 		return Conversions.convertCustomerToCustomerData(cust);
 	}
 	
