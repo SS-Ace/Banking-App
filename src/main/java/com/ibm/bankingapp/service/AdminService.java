@@ -8,6 +8,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.formData.RegisterForm;
 import com.ibm.bankingapp.formData.UserForm;
@@ -60,6 +61,8 @@ public class AdminService {
 		User user = userRepo.findById(id).orElse(null);
 		if (user == null)
 			throw new ApiException("Admin doesn't exist");
+		if(!user.getUserType().equals("ADMIN"))
+			throw new ApiException("Entered user id is not associated with admin");
 		return adminRepo.findByUser(user);
 	}
 
@@ -135,5 +138,16 @@ public class AdminService {
 	public List<Customer> generateAuditReport() {
 		return customerRepo.findAll();
 	}
+
+	public Account changeAccType(Long accNo, AccountForm form) throws ApiException {
+		if(form.getAccountType() == null) throw new ApiException("Account type is required");
+		String accType = form.getAccountType();
+		Account acc = accountRepo.findById(accNo).orElse(null);
+		if(acc == null) throw new ApiException("Invalid account number");
+		acc.setAccountType(accType);
+		return accountRepo.save(acc);
+	}
+
+	
 
 }

@@ -48,6 +48,7 @@ public class SecurityConfig {
 					.requestMatchers("/accounts/**").hasRole("CUSTOMER")
 					.requestMatchers("/transactions/**").hasRole("CUSTOMER")
 					.requestMatchers("/admins/customers/**").hasRole("ADMIN")
+					.requestMatchers("/reports/**").hasRole("ADMIN")
 					.requestMatchers("/admins/**").hasRole("SUPER_ADMIN")
 					.anyRequest().denyAll())
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ibm.bankingapp.formData.AccountForm;
 import com.ibm.bankingapp.formData.CustomerForm;
 import com.ibm.bankingapp.formData.RegisterForm;
 import com.ibm.bankingapp.formData.UserForm;
+import com.ibm.bankingapp.model.Account;
 import com.ibm.bankingapp.model.Admin;
 import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.service.AdminService;
@@ -77,19 +79,17 @@ public class AdminController {
     	return service.updateCustomerCredentials(userId, form);
     }
     
-    @PutMapping("/customers/{custId}/accounts/{accNo}")
-    public UserData updateCustAccDetails(@PathVariable Long custId, @PathVariable Long accNo) {
-    	// TODO
-    	return null;
+    @PutMapping("/customers/accounts/changeType")
+    public Account changeAccType(@PathVariable Long accNo, @RequestBody AccountForm form) throws ApiException {
+    	return service.changeAccType(accNo, form);
     }
+    
+//    @PutMapping("/customers/accounts/deposit")
+    
     
     @DeleteMapping("/customers/{userId}")
     public void deleteCustomer(@PathVariable Long userId) throws ApiException {
     	service.deleteCustomer(userId);
     }
 
-    @GetMapping("/report")
-    public List<Customer> generateAuditReport() {
-        return service.generateAuditReport();
-    }
 }

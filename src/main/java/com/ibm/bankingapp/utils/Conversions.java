@@ -9,6 +9,7 @@ import com.ibm.bankingapp.model.Customer;
 import com.ibm.bankingapp.model.Transaction;
 import com.ibm.bankingapp.responseData.UserData;
 import com.ibm.bankingapp.responseData.TransactionData;
+import com.ibm.bankingapp.responseData.TransactionReportData;
 
 public class Conversions {
 	
@@ -33,6 +34,17 @@ public class Conversions {
 		for(Transaction t: transList) {
 			data.add(new TransactionData(t.getTransactionId(), 
 					t.getAmount(), t.getTransactionDate(), 
+					t.getDestinationAccount().getAccountNumber()));
+		}
+		return data;
+	}
+	
+	public static List<TransactionReportData> convertTransactionToTransactionReportData(List<Transaction> transList) {
+		List<TransactionReportData> data = new ArrayList<TransactionReportData>();
+		for(Transaction t: transList) {
+			data.add(new TransactionReportData(t.getTransactionId(), 
+					t.getAmount(), t.getTransactionDate(),
+					t.getSourceAccount().getAccountNumber(),
 					t.getDestinationAccount().getAccountNumber()));
 		}
 		return data;
